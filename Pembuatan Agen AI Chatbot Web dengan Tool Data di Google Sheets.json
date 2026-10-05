@@ -1,0 +1,165 @@
+{
+  "name": "Pembuatan Agen AI Chatbot Web dengan Tool Data di Google Sheets",
+  "nodes": [
+    {
+      "parameters": {
+        "public": true,
+        "options": {
+          "responseMode": "lastNode"
+        }
+      },
+      "id": "914df14e-31d6-4942-b4cb-d03e1339e24c",
+      "name": "When chat message received",
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.5,
+      "position": [
+        0,
+        112
+      ],
+      "webhookId": "cd88bcd3-2ba4-4218-82ea-cf9c9a2f6010"
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "# Peran\nKamu adalah asisten informasi produk laptop.\n\n# Tugas\nJawab pertanyaan pengguna mengenai nama produk, harga, spesifikasi, dan kegunaan laptop berdasarkan informasi yang tersedia pada Tool \"Get row(s) in sheet in Google Sheets\".\n\n# Aturan\n1. Gunakan Tool \"Get row(s) in sheet in Google Sheets\" sebagai sumber informasi utama.\n2. Jawaban mengenai produk dan harga harus berdasarkan data yang tersedia di Google Sheets.\n3. Jangan mengarang harga, spesifikasi, atau informasi produk yang tidak tersedia di Google Sheets.\n4. Jika informasi yang ditanyakan tidak ditemukan dalam data, sampaikan bahwa informasi tersebut belum tersedia.\n5. Jawab menggunakan bahasa Indonesia yang jelas dan ringkas.\n6. Jika pengguna menanyakan rekomendasi, berikan berdasarkan informasi produk yang tersedia pada Google Sheets."
+        }
+      },
+      "id": "41a6b078-05df-4145-9e9a-c859d6157ddf",
+      "name": "AI Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        288,
+        112
+      ]
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.5-flash",
+        "options": {
+          "temperature": 0.2
+        }
+      },
+      "id": "e6b24149-ebd1-404a-8901-670a55809699",
+      "name": "Google Gemini Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.2,
+      "position": [
+        224,
+        336
+      ],
+      "credentials": {
+        "googlePalmApi": {
+          "id": null,
+          "name": "Gateway credits",
+          "__aiGatewayManaged": true
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "id": "bbda3893-1f2a-4d41-b100-ce56c61f1dce",
+      "name": "Simple Memory",
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        352,
+        336
+      ]
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Membaca seluruh data produk laptop (kolom Produk, Harga, Spesifikasi, Kegunaan) dari Google Sheets.",
+        "documentId": {
+          "__rl": true,
+          "value": "1mSA-mR1tm7MynTAj7oaVDJE-ibbIhqczlSmqW0fXsrg",
+          "mode": "list",
+          "cachedResultName": "produk laptop",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1mSA-mR1tm7MynTAj7oaVDJE-ibbIhqczlSmqW0fXsrg/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1mSA-mR1tm7MynTAj7oaVDJE-ibbIhqczlSmqW0fXsrg/edit#gid=0"
+        },
+        "options": {}
+      },
+      "id": "3b7d258d-728d-47ae-848a-26423c645409",
+      "name": "Get row(s) in sheet in Google Sheets",
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        480,
+        336
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "gVg4UH17AdT86oWF",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet in Google Sheets": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "c3bbf6e0-dabb-4b40-b926-0635c133b090",
+  "meta": {
+    "instanceId": "758b52a28c92ee2cd407bd55f334ec097c9843042e9fa88ca999a1d53a0f26c0"
+  },
+  "nodeGroups": [],
+  "id": "GfGShGRtBjGURvkA",
+  "tags": []
+}
